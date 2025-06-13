@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dado 3D Realista</title>
+    <style>
+      body {
+        background: #e0e0e0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        margin: 0;
+        font-family: sans-serif;
+      }
+      .scene {
+        width: 200px;
+        height: 200px;
+        perspective: 800px;
+      }
+      .cube {
+        width: 200px;
+        height: 200px;
+        position: relative;
+        transform-style: preserve-3d;
+        transform: rotateX(0deg) rotateY(0deg);
+        transition: transform 1.5s cubic-bezier(0.25, 1.5, 0.5, 1);
+      }
+      .face {
+        position: absolute;
+        width: 200px;
+        height: 200px;
+        background: #fff;
+        border-radius: 20px;
+        border: 3px solid #444;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        grid-template-rows: repeat(3, 1fr);
+        align-items: center;
+        justify-items: center;
+      }
+      .dot {
+        width: 20px;
+        height: 20px;
+        background: #000;
+        border-radius: 50%;
+      }
+      .face1 {
+        transform: rotateY(0deg) translateZ(100px);
+      }
+      .face2 {
+        transform: rotateY(90deg) translateZ(100px);
+      }
+      .face3 {
+        transform: rotateY(180deg) translateZ(100px);
+      }
+      .face4 {
+        transform: rotateY(-90deg) translateZ(100px);
+      }
+      .face5 {
+        transform: rotateX(90deg) translateZ(100px);
+      }
+      .face6 {
+        transform: rotateX(-90deg) translateZ(100px);
+      }
+      button {
+        margin-top: 30px;
+        padding: 14px 28px;
+        font-size: 18px;
+        background-color: #888;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      button:hover {
+        background-color: #45a049;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="scene">
+      <div class="cube" id="cube">
+        <div class="face face1">
+          <div class="dot" style="grid-column: 2; grid-row: 2"></div>
+        </div>
+        <div class="face face2">
+          <div class="dot" style="grid-column: 1; grid-row: 1"></div>
+          <div class="dot" style="grid-column: 3; grid-row: 3"></div>
+        </div>
+        <div class="face face3">
+          <div class="dot" style="grid-column: 1; grid-row: 1"></div>
+          <div class="dot" style="grid-column: 2; grid-row: 2"></div>
+          <div class="dot" style="grid-column: 3; grid-row: 3"></div>
+        </div>
+        <div class="face face4">
+          <div class="dot" style="grid-column: 1; grid-row: 1"></div>
+          <div class="dot" style="grid-column: 3; grid-row: 1"></div>
+          <div class="dot" style="grid-column: 1; grid-row: 3"></div>
+          <div class="dot" style="grid-column: 3; grid-row: 3"></div>
+        </div>
+        <div class="face face5">
+          <div class="dot" style="grid-column: 1; grid-row: 1"></div>
+          <div class="dot" style="grid-column: 3; grid-row: 1"></div>
+          <div class="dot" style="grid-column: 2; grid-row: 2"></div>
+          <div class="dot" style="grid-column: 1; grid-row: 3"></div>
+          <div class="dot" style="grid-column: 3; grid-row: 3"></div>
+        </div>
+        <div class="face face6">
+          <div class="dot" style="grid-column: 1; grid-row: 1"></div>
+          <div class="dot" style="grid-column: 2; grid-row: 1"></div>
+          <div class="dot" style="grid-column: 3; grid-row: 1"></div>
+          <div class="dot" style="grid-column: 1; grid-row: 3"></div>
+          <div class="dot" style="grid-column: 2; grid-row: 3"></div>
+          <div class="dot" style="grid-column: 3; grid-row: 3"></div>
+        </div>
+      </div>
+    </div>
+    <button onclick="rollDice()">🎲 Lançar Dado</button>
+
+    <script>
+      const cube = document.getElementById("cube");
+      let totalX = 0;
+      let totalY = 0;
+      let lastTwo = [];
+
+      function getRandomFace() {
+        let value;
+        let attempts = 0;
+
+        do {
+          value = Math.floor(Math.random() * 6) + 1;
+          attempts++;
+        } while (lastTwo.includes(value) && attempts < 10);
+
+        lastTwo.push(value);
+        if (lastTwo.length > 2) lastTwo.shift();
+        return value;
+      }
+
+      const rotationMap = {
+        1: { x: 0, y: 0 },
+        2: { x: 0, y: -90 },
+        3: { x: 0, y: 180 },
+        4: { x: 0, y: 90 },
+        5: { x: -90, y: 0 },
+        6: { x: 90, y: 0 },
+      };
+
+      function rollDice() {
+        const value = getRandomFace();
+        const rotation = rotationMap[value];
+        const baseX = 360 * Math.floor(Math.random() * 5);
+        const baseY = 360 * Math.floor(Math.random() * 5);
+        const finalX = baseX + rotation.x;
+        const finalY = baseY + rotation.y;
+        cube.style.transform = `rotateX(${finalX}deg) rotateY(${finalY}deg)`;
+      }
+    </script>
+  </body>
+</html>
